@@ -54,7 +54,17 @@ MAX_SEED = np.iinfo(np.int32).max
 MAX_IMAGE_SIZE = 2048
 
 @spaces.GPU
-def infer(prompt, negative_prompt, seed, randomize_seed, width, height, guidance_scale, num_inference_steps, ip_adapter_image = None, ip_adapter_scale = None):
+def infer(prompt, 
+          ip_adapter_image = None, 
+          ip_adapter_scale = 0.5, 
+          negative_prompt = "", 
+          seed = 0, 
+          randomize_seed = True, 
+          width = 1024, 
+          height = 1024, 
+          guidance_scale = 5.0, 
+          num_inference_steps = 25
+          ):
     if randomize_seed:
         seed = random.randint(0, MAX_SEED)
     generator = torch.Generator().manual_seed(seed)
@@ -180,13 +190,15 @@ with gr.Blocks(css=css) as demo:
     
     with gr.Row():
         gr.Examples(
+                fn = infer,
                 examples = examples,
-                inputs = [prompt, ip_adapter_image, ip_adapter_scale]
+                inputs = [prompt, ip_adapter_image, ip_adapter_scale],
+                outputs = [result]
             )
 
     run_button.click(
         fn = infer,
-        inputs = [prompt, negative_prompt, seed, randomize_seed, width, height, guidance_scale, num_inference_steps, ip_adapter_image, ip_adapter_scale],
+        inputs = [prompt, ip_adapter_image, ip_adapter_scale, negative_prompt, seed, randomize_seed, width, height, guidance_scale, num_inference_steps],
         outputs = [result]
     )
 
