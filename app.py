@@ -101,8 +101,9 @@ def infer(prompt,
 
 examples = [
     ["一张瓢虫的照片，微距，变焦，高质量，电影，拿着一个牌子，写着“可图”", None, None],
+    ["3D anime style, hyperrealistic oil painting, dolphin leaping out of the water", None, None],
     ["穿着黑色T恤衫，上面中文绿色大字写着“可图”", "image/test_ip.jpg", 0.5],
-    ["一只可爱的小狗在奔跑", "image/test_ip2.png", 0.5]
+    ["A cute dog is running.", "image/test_ip2.png", 0.5]
 ]
 
 css="""
@@ -114,11 +115,14 @@ css="""
     margin: 0 auto;
     max-width: 750px;
 }
+#title {
+    margin: 0 auto;
+}
 """
 
 with gr.Blocks(css=css) as demo:
     with gr.Row():
-        with gr.Column():
+        with gr.Column(elem_id='title'):
             gr.Markdown(f"""
             # Kolors
             """)
