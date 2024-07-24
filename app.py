@@ -51,7 +51,7 @@ if hasattr(pipe_i2i.unet, 'encoder_hid_proj'):
 pipe_i2i.load_ip_adapter(f'{ckpt_IPA_dir}' , subfolder="", weight_name=["ip_adapter_plus_general.bin"])
 
 MAX_SEED = np.iinfo(np.int32).max
-MAX_IMAGE_SIZE = 2048
+MAX_IMAGE_SIZE = 1024
 
 @spaces.GPU
 def infer(prompt, 
@@ -103,7 +103,7 @@ examples = [
     ["一张瓢虫的照片，微距，变焦，高质量，电影，拿着一个牌子，写着“可图”", None, None],
     ["3D anime style, hyperrealistic oil painting, dolphin leaping out of the water", None, None],
     ["穿着黑色T恤衫，上面中文绿色大字写着“可图”", "image/test_ip.jpg", 0.5],
-    ["A cute dog is running.", "image/test_ip2.png", 0.5]
+    ["A cute dog is running", "image/test_ip2.png", 0.5]
 ]
 
 css="""
@@ -120,13 +120,7 @@ css="""
 }
 """
 
-with gr.Blocks(css=css) as demo:
-    with gr.Row():
-        with gr.Column(elem_id='title'):
-            gr.Markdown(f"""
-            # Kolors
-            """)
-        
+with gr.Blocks(css=css, title="Kolors") as Kolors:
     with gr.Row():
         with gr.Column(elem_id="col-left"):
             with gr.Row():
@@ -210,4 +204,4 @@ with gr.Blocks(css=css) as demo:
         outputs = [result]
     )
 
-demo.queue().launch(debug=True)
+Kolors.queue().launch(debug=True)
