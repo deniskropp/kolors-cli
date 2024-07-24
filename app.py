@@ -129,9 +129,7 @@ with gr.Blocks(css=css) as Kolors:
             with gr.Row():
                 prompt = gr.Textbox(
                     label="Prompt",
-                    show_label=False,
                     placeholder="Enter your prompt",
-                    container=False,
                     lines=2
                 )
             with gr.Row():
@@ -190,7 +188,7 @@ with gr.Blocks(css=css) as Kolors:
                         value=0.5,
                     )
             with gr.Row():
-                run_button = gr.Button("Run", scale=0)
+                run_button = gr.Button("Run")
             
         with gr.Column(elem_id="col-right"):
             result = gr.Image(label="Result", show_label=False)
