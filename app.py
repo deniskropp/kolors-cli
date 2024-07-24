@@ -109,7 +109,7 @@ examples = [
 css="""
 #col-left {
     margin: 0 auto;
-    max-width: 500px;
+    max-width: 600px;
 }
 #col-right {
     margin: 0 auto;
@@ -132,8 +132,8 @@ with gr.Blocks(css=css) as Kolors:
                     show_label=False,
                     placeholder="Enter your prompt",
                     container=False,
+                    lines=2
                 )
-                run_button = gr.Button("Run", scale=0)
             with gr.Row():
                 ip_adapter_image = gr.Image(label="Image Prompt (optional)", type="pil")
             with gr.Accordion("Advanced Settings", open=False):
@@ -189,6 +189,8 @@ with gr.Blocks(css=css) as Kolors:
                         step=0.05,
                         value=0.5,
                     )
+            with gr.Row():
+                run_button = gr.Button("Run", scale=0)
             
         with gr.Column(elem_id="col-right"):
             result = gr.Image(label="Result", show_label=False)
