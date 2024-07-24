@@ -4,3 +4,4 @@ invisible_watermark
 torch
 transformers
 sentencepiece
+gradio==4.38.1
