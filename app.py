@@ -115,12 +115,15 @@ css="""
     margin: 0 auto;
     max-width: 750px;
 }
-#title {
-    margin: 0 auto;
-}
 """
 
-with gr.Blocks(css=css, title="Kolors") as Kolors:
+def load_description(fp):
+    with open(fp, 'r', encoding='utf-8') as f:
+        content = f.read()
+    return content
+
+with gr.Blocks(css=css) as Kolors:
+    gr.HTML(load_description("assets/title.md"))
     with gr.Row():
         with gr.Column(elem_id="col-left"):
             with gr.Row():
