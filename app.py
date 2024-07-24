@@ -70,6 +70,7 @@ def infer(prompt,
     generator = torch.Generator().manual_seed(seed)
 
     if ip_adapter_image is None:
+        pipe_t2i.to(device)
         image = pipe_t2i(
             prompt = prompt, 
             negative_prompt = negative_prompt,
@@ -81,9 +82,12 @@ def infer(prompt,
         ).images[0] 
         return image
     else:
+        pipe_i2i.to(device)
+        image_encoder.to(device)
+        pipe_i2i.image_encoder = image_encoder
         pipe_i2i.set_ip_adapter_scale([ip_adapter_scale])
         image = pipe_i2i(
-                prompt= prompt ,
+                prompt=prompt ,
                 ip_adapter_image=[ip_adapter_image],
                 negative_prompt=negative_prompt, 
                 height=height,
