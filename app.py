@@ -135,7 +135,7 @@ with gr.Blocks(css=css) as Kolors:
                 )
                 run_button = gr.Button("Run", scale=0)
             with gr.Row():
-                ip_adapter_image = gr.Image(label="IP-Adapter Image (optional)", type="pil")
+                ip_adapter_image = gr.Image(label="Image Prompt (optional)", type="pil")
             with gr.Accordion("Advanced Settings", open=False):
                 negative_prompt = gr.Textbox(
                     label="Negative prompt",
