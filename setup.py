@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'accelerate==0.27.2',
-        'diffusers==0.28.2',
+        'diffusers>=0.29.0',
         'invisible_watermark==0.2.0',
         'torch==2.2.0',
         'transformers==4.42.4',
