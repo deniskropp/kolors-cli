@@ -11,22 +11,20 @@ setup(
         'torch==2.2.0',
         'transformers==4.42.4',
         'sentencepiece==0.1.99',
-        'gradio==4.38.1',
-        'huggingface_hub==0.16.4',
-        'Pillow==10.0.0',
+        'Pillow'
     ],
     entry_points={
         'console_scripts': [
-            'kolors-cli=kolors.kolors_cli:main',
+            'kolors-cli=kolors_cli.kolors_cli:main',
         ],
     },
     author='Denis Kropp',
     author_email='dok@directfb1.org',
-    description='A CLI tool for generating images based on prompts using Kwai-Kolors.',
+    description='A command-line interface for generating images using the Kolors model.',
     url='https://github.com/deniskropp/kolors-cli',
     classifiers=[
         'Programming Language :: Python :: 3',
-        'License :: OSI Approved :: Apache Software License',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.8',

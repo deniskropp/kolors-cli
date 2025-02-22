@@ -1,5 +1,7 @@
 import argparse
 import torch
+import random
+import numpy as np
 from huggingface_hub import snapshot_download
 from transformers import CLIPVisionModelWithProjection, CLIPImageProcessor
 from kolors.pipelines import pipeline_stable_diffusion_xl_chatglm_256_ipadapter, pipeline_stable_diffusion_xl_chatglm_256
@@ -7,9 +9,9 @@ from kolors.models.modeling_chatglm import ChatGLMModel
 from kolors.models.tokenization_chatglm import ChatGLMTokenizer
 from kolors.models import unet_2d_condition
 from diffusers import AutoencoderKL, EulerDiscreteScheduler, UNet2DConditionModel
-import numpy as np
+from PIL import Image
 
-device = "cuda"
+device = "cuda" if torch.cuda.is_available() else "cpu"
 ckpt_dir = snapshot_download(repo_id="Kwai-Kolors/Kolors")
 ckpt_IPA_dir = snapshot_download(repo_id="Kwai-Kolors/Kolors-IP-Adapter-Plus")
 
@@ -19,7 +21,7 @@ vae = AutoencoderKL.from_pretrained(f"{ckpt_dir}/vae", revision=None).half().to(
 scheduler = EulerDiscreteScheduler.from_pretrained(f"{ckpt_dir}/scheduler")
 unet_t2i = UNet2DConditionModel.from_pretrained(f"{ckpt_dir}/unet", revision=None).half().to(device)
 unet_i2i = unet_2d_condition.UNet2DConditionModel.from_pretrained(f"{ckpt_dir}/unet", revision=None).half().to(device)
-image_encoder = CLIPVisionModelWithProjection.from_pretrained(f'{ckpt_IPA_dir}/image_encoder',ignore_mismatched_sizes=True).to(dtype=torch.float16, device=device)
+image_encoder = CLIPVisionModelWithProjection.from_pretrained(f'{ckpt_IPA_dir}/image_encoder', ignore_mismatched_sizes=True).to(dtype=torch.float16, device=device)
 ip_img_size = 336
 clip_image_processor = CLIPImageProcessor(size=ip_img_size, crop_size=ip_img_size)
 
@@ -52,16 +54,15 @@ MAX_SEED = np.iinfo(np.int32).max
 MAX_IMAGE_SIZE = 1024
 
 def infer(prompt, 
-          ip_adapter_image = None, 
-          ip_adapter_scale = 0.5, 
-          negative_prompt = "", 
-          seed = 0, 
-          randomize_seed = False, 
-          width = 1024, 
-          height = 1024, 
-          guidance_scale = 5.0, 
-          num_inference_steps = 25
-          ):
+          ip_adapter_image=None, 
+          ip_adapter_scale=0.5, 
+          negative_prompt="", 
+          seed=0, 
+          randomize_seed=False, 
+          width=1024, 
+          height=1024, 
+          guidance_scale=5.0, 
+          num_inference_steps=25):
     if randomize_seed:
         seed = random.randint(0, MAX_SEED)
     generator = torch.Generator().manual_seed(seed)
@@ -69,13 +70,13 @@ def infer(prompt,
     if ip_adapter_image is None:
         pipe_t2i.to(device)
         image = pipe_t2i(
-            prompt = prompt, 
-            negative_prompt = negative_prompt,
-            guidance_scale = guidance_scale, 
-            num_inference_steps = num_inference_steps, 
-            width = width, 
-            height = height,
-            generator = generator
+            prompt=prompt, 
+            negative_prompt=negative_prompt,
+            guidance_scale=guidance_scale, 
+            num_inference_steps=num_inference_steps, 
+            width=width, 
+            height=height,
+            generator=generator
         ).images[0] 
         return image
     else:
@@ -84,7 +85,7 @@ def infer(prompt,
         pipe_i2i.image_encoder = image_encoder
         pipe_i2i.set_ip_adapter_scale([ip_adapter_scale])
         image = pipe_i2i(
-                prompt=prompt ,
+                prompt=prompt,
                 ip_adapter_image=[ip_adapter_image],
                 negative_prompt=negative_prompt, 
                 height=height,
@@ -113,26 +114,31 @@ def main():
     args = parser.parse_args()
 
     if args.ip_adapter_image:
-        from PIL import Image
-        ip_adapter_image = Image.open(args.ip_adapter_image)
+        try:
+            ip_adapter_image = Image.open(args.ip_adapter_image)
+        except Exception as e:
+            print(f"Error opening image file {args.ip_adapter_image}: {e}")
+            return
     else:
         ip_adapter_image = None
 
-    image = infer(
-        prompt=args.prompt,
-        ip_adapter_image=ip_adapter_image,
-        ip_adapter_scale=args.ip_adapter_scale,
-        negative_prompt=args.negative_prompt,
-        seed=args.seed,
-        randomize_seed=args.randomize_seed,
-        width=args.width,
-        height=args.height,
-        guidance_scale=args.guidance_scale,
-        num_inference_steps=args.num_inference_steps
-    )
-
-    image.save(args.output)
-    print(f"Image saved to {args.output}")
+    try:
+        image = infer(
+            prompt=args.prompt,
+            ip_adapter_image=ip_adapter_image,
+            ip_adapter_scale=args.ip_adapter_scale,
+            negative_prompt=args.negative_prompt,
+            seed=args.seed,
+            randomize_seed=args.randomize_seed,
+            width=args.width,
+            height=args.height,
+            guidance_scale=args.guidance_scale,
+            num_inference_steps=args.num_inference_steps
+        )
+        image.save(args.output)
+        print(f"Image saved to {args.output}")
+    except Exception as e:
+        print(f"Error during image generation: {e}")
 
 if __name__ == "__main__":
     main()
