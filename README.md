@@ -13,9 +13,11 @@ A command-line interface for generating images using the Kolors model. This tool
 
 To install the Kolors CLI, you can use pip:
 
-```bash
-pip install kolors-cli
-```
+    ```bash
+    git clone deniskropp/kolors-cli.git
+    cd kolors-cli
+    pipx install -e .
+    ```
 
 ## Usage
 
@@ -23,22 +25,22 @@ pip install kolors-cli
 
 Generate an image from a text prompt:
 
-```bash
-kolors-cli --prompt "A beautiful landscape with mountains and a river"
-```
+    ```bash
+    kolors-cli --prompt "A beautiful landscape with mountains and a river"
+    ```
 
 ### Advanced Usage
 
 Generate an image with an image prompt:
 
-```bash
-kolors-cli --prompt "A beautiful landscape with mountains and a river" --ip_adapter_image "path/to/image.jpg"
-```
+    ```bash
+    kolors-cli --prompt "A beautiful landscape with mountains and a river" --ip_adapter_image "path/to/image.jpg"
+    ```
 
 ### Full Options
 
-```bash
-kolors-cli --prompt "A beautiful landscape with mountains and a river" \
+    ```bash
+    kolors-cli --prompt "A beautiful landscape with mountains and a river" \
            --ip_adapter_image "path/to/image.jpg" \
            --ip_adapter_scale 0.5 \
            --negative_prompt "blurry, low quality" \
@@ -49,7 +51,7 @@ kolors-cli --prompt "A beautiful landscape with mountains and a river" \
            --guidance_scale 5.0 \
            --num_inference_steps 25 \
            --output "output.png"
-```
+    ```
 
 ### Options
 
